@@ -137,6 +137,7 @@ int initial_send()
 int initial_receive(int *conn,int *sockfd, int client_id)
 {
 		//printf("initial_receive(client) \n");
+		int list_serv = -1;
 	    printf("-->Client_id = %d %d %d\n", *conn, *sockfd, client_id);
 
 		//printf("Timestamp: %d\n",(int)time(NULL));
@@ -166,16 +167,20 @@ int initial_receive(int *conn,int *sockfd, int client_id)
 			error_print("bind ");
 
 		/*Monitor connection*/
-		if (listen(*sockfd, SOMAXCONN) < 0)
+		if (list_serv = listen(*sockfd, SOMAXCONN) < 0)
+		{
 			error_print("listen");
-
+		}
+		printf("list_serv = %d\n", list_serv);
 		struct sockaddr_in peeraddr;/*Store the client Socket information of a successful connection*/
 		socklen_t peerlen = sizeof(peeraddr);
 
 		/*Receive the first connection request from the listening queue*/
 		printf("BEFORE ACCEPT\n");
+		// TODO accept()
 		if ((*conn = accept(*sockfd, (struct sockaddr*) &peeraddr, &peerlen)) < 0)
 			error_print("accept");
+		printf("conn accept = %d\n", *conn);
 		printf("PORT from Client = %d\n",servaddr.sin_port);
 		return 0;
 }
@@ -226,7 +231,7 @@ void receive_from_server(int conn, int sockfd)
 	{
 		bzero(recv_buf, strlen(recv_buf));
 		int ret = read(conn, recv_buf, sizeof(recv_buf));//Read data sent by conn connection
-		printf("recv_buf = %s\n", recv_buf);
+		printf("--->>>recv_buf = %s\n", recv_buf);
 		if (ret < 0)
 			error_print("read");
 		else if (ret == 0)
